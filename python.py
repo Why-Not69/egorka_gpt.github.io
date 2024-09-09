@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify, render_template
 from collections import deque
 import os
 
-app = Flask(__name__, template_folder='.')  # Если HTML файлы в корневой папке
+app = Flask(__name__, static_folder='.')
+  # Если HTML файлы в корневой папке
 
 
 # Очередь для хранения сообщений (не более 100)
