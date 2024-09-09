@@ -2,14 +2,15 @@ from flask import Flask, request, jsonify, render_template
 from collections import deque
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')  # Если HTML файлы в корневой папке
+
 
 # Очередь для хранения сообщений (не более 100)
 messages = deque(maxlen=100)
 
 @app.route('/')
 def index():
-    return render_template('', 'index.html')
+    return render_template('index.html')
 
 @app.route('/send', methods=['POST'])
 def send_message():
