@@ -9,7 +9,7 @@ messages = deque(maxlen=100)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('', 'index.html')
 
 @app.route('/send', methods=['POST'])
 def send_message():
