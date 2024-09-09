@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from collections import deque
+import os
 
 app = Flask(__name__)
 
@@ -23,4 +24,5 @@ def get_history():
     return jsonify(list(messages))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 8000))  # Use PORT environment variable or default to 8000
+    app.run(host='0.0.0.0', port=port)
