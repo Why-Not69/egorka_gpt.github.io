@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from collections import deque
 import os
 
-app = Flask(__name__, static_folder='.', template_folder='.')
+app = Flask(__name__, static_folder='static', template_folder='.')
   # Если HTML файлы в корневой папке
 
 
