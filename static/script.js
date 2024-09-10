@@ -4,22 +4,26 @@ document.getElementById('message-input').addEventListener('keypress', function (
 });
 
 const maxMessages = 100;
-const userId = generateUserId();
+
 // Функция отправки сообщения
 function sendMessage() {
     const inputField = document.getElementById('message-input');
     const messageText = inputField.value.trim();
+    
 
     if (messageText === '') return;
 
-    if (messageText.length > 40) {
-        inputField.value = messageText.slice(0, 40); // Ограничение на 50 символов
+
+    if (messageText.length > 50) {
+        inputField.value = messageText.slice(0, 50); // Ограничение на 50 символов
         return;
     }
 
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', 'my-message');
     messageElement.textContent = messageText;
+    
+    document.getElementById('chat-window').appendChild(messageElement);
 
     appendMessage(messageElement);
     inputField.value = '';
@@ -30,7 +34,7 @@ function sendMessage() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: messageText, senderId: userId }), // Добавляем уникальный идентификатор пользователя
+        body: JSON.stringify({ message: messageText })
     }).then(() => {
         fetchMessages();  // После отправки сообщения, обновляем чат
     });
@@ -46,9 +50,17 @@ function fetchMessages() {
             const chatWindow = document.getElementById('chat-window');
             chatWindow.innerHTML = '';  // Очищаем текущее содержимое чата
 
+    // Эмуляция сообщения от собеседника
+    setTimeout(() => {
+        const theirMessageElement = document.createElement('div');
+        theirMessageElement.classList.add('message', 'their-message');
+        theirMessageElement.textContent = 'Сообщение от собеседника';
+        document.getElementById('chat-window').appendChild(theirMessageElement);
+        scrollToBottom();
+    }, 1000);
             data.forEach(message => {
                 const messageElement = document.createElement('div');
-                messageElement.classList.add('message', msg.senderId === userId ? 'my-message' : 'their-message');
+                messageElement.classList.add('message', message.author === 'you' ? 'my-message' : 'their-message');
                 messageElement.textContent = message.text;
                 chatWindow.appendChild(messageElement);
             });
@@ -74,10 +86,6 @@ function appendMessage(messageElement) {
 function scrollToBottom() {
     const chatWindow = document.getElementById('chat-window');
     chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function generateUserId() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
 // Периодически запрашиваем сообщения с сервера каждые 0,5 секунды
