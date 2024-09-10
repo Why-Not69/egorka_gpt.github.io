@@ -38,7 +38,7 @@ function sendMessage() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: messageText, senderId: userId })  // Добавляем уникальный идентификатор пользователя
+        body: JSON.stringify({ message: messageText, senderId: userId })  // Отправляем идентификатор пользователя
     }).then(() => {
         fetchMessages();  // После отправки сообщения, обновляем чат
     });
@@ -56,7 +56,14 @@ function fetchMessages() {
 
             data.forEach(message => {
                 const messageElement = document.createElement('div');
-                messageElement.classList.add('message', message.senderId === userId ? 'my-message' : 'their-message');
+                
+                // Проверка senderId для определения, кто отправил сообщение
+                if (message.senderId === userId) {
+                    messageElement.classList.add('message', 'my-message');  // Сообщение от текущего пользователя
+                } else {
+                    messageElement.classList.add('message', 'their-message');  // Сообщение от другого пользователя
+                }
+
                 messageElement.textContent = message.text;
                 chatWindow.appendChild(messageElement);
             });
