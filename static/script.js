@@ -4,18 +4,26 @@ document.getElementById('message-input').addEventListener('keypress', function (
 });
 
 const maxMessages = 100;
-const userId = generateUserId();
+const maxChars = 50;
+const userId = generateUserId();  // Генерируем уникальный идентификатор пользователя
+
+// Обработчик для ограничения символов в поле ввода
+document.getElementById('message-input').addEventListener('input', function () {
+    const inputField = document.getElementById('message-input');
+    const charCount = inputField.value.length;
+
+    if (charCount >= maxChars) {
+        alert('Достигнут лимит в 50 символов');
+        inputField.value = inputField.value.slice(0, maxChars);
+    }
+});
+
 // Функция отправки сообщения
 function sendMessage() {
     const inputField = document.getElementById('message-input');
     const messageText = inputField.value.trim();
 
     if (messageText === '') return;
-
-    if (messageText.length > 40) {
-        inputField.value = messageText.slice(0, 40); // Ограничение на 50 символов
-        return;
-    }
 
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', 'my-message');
@@ -30,7 +38,7 @@ function sendMessage() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: messageText, senderId: userId }), // Добавляем уникальный идентификатор пользователя
+        body: JSON.stringify({ message: messageText, senderId: userId })  // Добавляем уникальный идентификатор пользователя
     }).then(() => {
         fetchMessages();  // После отправки сообщения, обновляем чат
     });
@@ -48,7 +56,7 @@ function fetchMessages() {
 
             data.forEach(message => {
                 const messageElement = document.createElement('div');
-                messageElement.classList.add('message', msg.senderId === userId ? 'my-message' : 'their-message');
+                messageElement.classList.add('message', message.senderId === userId ? 'my-message' : 'their-message');
                 messageElement.textContent = message.text;
                 chatWindow.appendChild(messageElement);
             });
@@ -76,6 +84,7 @@ function scrollToBottom() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+// Генерация уникального идентификатора пользователя
 function generateUserId() {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
